@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring Boot Session Example</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { margin: 5px; padding: 8px; }
+    </style>
+</head>
+<body>
+<h2>Login</h2>
+<input type="text" id="loginEmail" placeholder="Email">
+<input type="password" id="loginPassword" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="loginResult"></p>
+
+<h2>User Info</h2>
+<button onclick="getUserInfo()">Get My Info</button>
+<p id="userInfo"></p>
+
+<h2>Logout</h2>
+<button onclick="logout()">Logout</button>
+<p id="logoutResult"></p>
+
+<script>
+    const baseUrl = "http://localhost:8080";
+
+    function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      fetch(baseUrl + "/login?gmail=" + email + "&password=" + password, {
+        method: "POST",
+        credentials: "include" // 🔑 very important (sends session cookie)
+      })
+      .then(res => res.text())
+      .then(data => document.getElementById("loginResult").innerText = data);
+    }
+
+    function getUserInfo() {
+      fetch(baseUrl + "/me", {
+        method: "GET",
+        credentials: "include" // 🔑 must include cookie
+      })
+      .then(res => res.text())
+      .then(data => document.getElementById("userInfo").innerText = data);
+    }
+
+    function logout() {
+      fetch(baseUrl + "/signOut", {
+        method: "POST",
+        credentials: "include"
+      })
+      .then(res => res.text())
+      .then(data => document.getElementById("logoutResult").innerText = data);
+    }
+</script>
+</body>
+</html>
